@@ -49,9 +49,7 @@ class Day03(filename: String) {
 
 		return oxygen.first().toLong(2) * co2.first().toLong(2)
 	}
-
-
 }
 
-private fun List<String>.findMostCommonBitAt(i: Int) =
-	if (this.count { it[i] == '1' } >= this.size / 2.0) '1' else '0'
+private fun List<String>.findMostCommonBitAt(position: Int) =
+	if (this.count { it[position] == '1' } >= this.size / 2.0) '1' else '0'
