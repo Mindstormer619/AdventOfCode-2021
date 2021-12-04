@@ -33,15 +33,6 @@ class Day04(filename: String) {
 		return 0
 	}
 
-	private fun Board.getUnmarkedSum(): Int {
-		val unmarkedSum = this.rows.sumOf { row ->
-			row.sumOf { square ->
-				if (square.checked) 0 else square.value
-			}
-		}
-		return unmarkedSum
-	}
-
 	fun getLastBoardScore(): Long {
 		val bingoBoards = mutableSetOf<Board>()
 
@@ -105,6 +96,15 @@ class Day04(filename: String) {
 				}
 			}
 			return bingoFound
+		}
+
+		fun getUnmarkedSum(): Int {
+			val unmarkedSum = this.rows.sumOf { row ->
+				row.sumOf { square ->
+					if (square.checked) 0 else square.value
+				}
+			}
+			return unmarkedSum
 		}
 	}
 }
