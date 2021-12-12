@@ -32,14 +32,22 @@ class Day12(filename: String) {
 			if (c == "end") return 1
 			if (c.isSmallCave && !visitingIsAllowed(c)) return 0
 
-			if (c.isSmallCave) smallCavesVisited[c] = smallCavesVisited[c]!! + 1
+			visit(c)
 			var totalPaths = 0
 			for (neighbor in network[c]!!) {
 				if (neighbor == "start") continue
 				totalPaths += navigateCaves(neighbor)
 			}
-			if (c.isSmallCave) smallCavesVisited[c] = smallCavesVisited[c]!! - 1
+			unvisit(c)
 			return totalPaths
+		}
+
+		private fun visit(c: Cave) {
+			if (c.isSmallCave) smallCavesVisited[c] = smallCavesVisited[c]!! + 1
+		}
+
+		private fun unvisit(c: Cave) {
+			if (c.isSmallCave) smallCavesVisited[c] = smallCavesVisited[c]!! - 1
 		}
 
 		private fun visitingIsAllowed(c: Cave): Boolean {
@@ -54,5 +62,3 @@ class Day12(filename: String) {
 }
 
 typealias Cave = String
-
-
