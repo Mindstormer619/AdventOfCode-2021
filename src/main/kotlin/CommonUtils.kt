@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 import java.io.File
 
 fun <T> readFileAndProcess(filePath: String, transform: (String) -> T): List<T> =
@@ -11,3 +13,7 @@ infix fun Int.toward(to: Int): IntProgression {
 }
 
 operator fun <K, V> Map<K, V>.invoke(key: K) = this.getValue(key)
+
+fun List<List<Int>>.check(r: Int, c: Int): Int? =
+    if (r !in this.indices || c !in this[r].indices) null
+    else this[r][c]
