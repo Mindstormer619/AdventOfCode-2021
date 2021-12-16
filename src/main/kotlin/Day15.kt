@@ -36,11 +36,13 @@ class Day15(filename: String) {
 	}
 
 	private class Navigator(val riskLevels: List<List<Int>>) {
-		val optimalRisk = PriorityQueue<Node> { a, b -> a.risk - b.risk }
+		val optimalRisk = PriorityQueue<Node>()
 		val riskMap = mutableMapOf<Vertex, Int>().withDefault { Int.MAX_VALUE }
 		val visitedVertices = mutableSetOf<Vertex>()
 
-		data class Node(val vertex: Vertex, val risk: Int)
+		data class Node(val vertex: Vertex, val risk: Int): Comparable<Node> {
+			override fun compareTo(other: Node) = this.risk - other.risk
+		}
 
 		init {
 			riskMap[0 to 0] = 0
