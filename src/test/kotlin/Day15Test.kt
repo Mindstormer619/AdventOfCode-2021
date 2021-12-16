@@ -14,6 +14,24 @@ class Day15Test {
 	@Test
 	fun `given alt input, lowest risk is 11`() {
 		solver = Day15("day15-alt".test)
-		assertEquals(11, solver.getLowestRisk())
+		assertEquals(10, solver.getLowestRisk())
+	}
+
+	@Test
+	fun `solve part 1`() {
+		solver = Day15(input.prod)
+		println(solver.getLowestRisk())
+	}
+
+	@Test
+	fun `given test input, scaled risk is 315`() {
+		solver = Day15(input.test)
+		assertEquals(315, solver.getScaledRisk())
+	}
+
+	@Test
+	fun `solve part 2`() {
+		solver = Day15(input.prod)
+		println(solver.getScaledRisk())
 	}
 }
