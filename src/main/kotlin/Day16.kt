@@ -153,9 +153,9 @@ class Day16(hex: String) {
 
 		fun versionSum(): Int = versionId + subpackets.sumOf { it.versionSum() }
 
-		fun getBitsValue(): Long = when(typeId) {
+		fun getBitsValue(): Long = when (typeId) {
 			0 -> subpackets.sumOf { it.getBitsValue() }
-			1 -> subpackets.fold(1) {acc, p -> acc * p.getBitsValue()}
+			1 -> subpackets.fold(1) { acc, p -> acc * p.getBitsValue() }
 			2 -> subpackets.minOf { it.getBitsValue() }
 			3 -> subpackets.maxOf { it.getBitsValue() }
 			4 -> value!!.toLong()
