@@ -7,7 +7,7 @@ fun <T> readFileAndProcess(filePath: String, transform: (String) -> T): List<T> 
 
 infix fun Int.mod(other: Int) = Math.floorMod(this, other)
 
-infix fun Int.toward(to: Int): IntProgression {
+infix fun Int.towards(to: Int): IntProgression {
     val step = if (this > to) -1 else 1
     return IntProgression.fromClosedRange(this, to, step)
 }

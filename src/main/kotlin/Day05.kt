@@ -38,17 +38,17 @@ class Day05(filename: String) {
 		for (segment in segments) {
 			val (start, end) = segment
 			if (start.x == end.x) {
-				for (y in start.y toward end.y) {
+				for (y in start.y towards end.y) {
 					pointMap.merge(Point(start.x, y), 1) { existing, _ -> existing + 1 }
 				}
 			}
 			else if (start.y == end.y) {
-				for (x in start.x toward end.x) {
+				for (x in start.x towards end.x) {
 					pointMap.merge(Point(x, start.y), 1) { existing, _ -> existing + 1 }
 				}
 			}
 			else {
-				for ((x,y) in (start.x toward end.x) zip (start.y toward end.y)) {
+				for ((x,y) in (start.x towards end.x) zip (start.y towards end.y)) {
 					pointMap.merge(Point(x, y), 1) { existing, _ -> existing + 1 }
 				}
 			}
