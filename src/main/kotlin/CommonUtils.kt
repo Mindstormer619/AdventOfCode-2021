@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 import java.io.File
 
 fun <T> readFileAndProcess(filePath: String, transform: (String) -> T): List<T> =
@@ -17,3 +15,9 @@ operator fun <K, V> Map<K, V>.invoke(key: K) = this.getValue(key)
 fun List<List<Int>>.check(r: Int, c: Int): Int? =
     if (r !in this.indices || c !in this[r].indices) null
     else this[r][c]
+
+infix fun Int.pow(other: Int): Long {
+    var product = 1L
+    for (t in 1..other) product *= this
+    return product
+}
