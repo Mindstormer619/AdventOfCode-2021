@@ -95,7 +95,7 @@ class Day22(filename: String) {
 			this.first <= other.first && this.last >= other.last
 
 		private infix fun IntRange.split(other: IntRange): List<IntRange> {
-			val overlap = (this overlap other) ?: return listOf(this, other) // No overlap
+			val overlap = (this overlap other) ?: return listOf(this, other).filter { it.size > 0 } // No overlap
 			return if (overlap == other) { // Full overlap
 				listOf(
 					first until other.first,
