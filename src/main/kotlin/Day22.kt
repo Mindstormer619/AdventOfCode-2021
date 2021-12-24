@@ -23,7 +23,7 @@ class Day22(filename: String) {
 	) {
 
 		constructor(x: IntRange, y: IntRange, z: IntRange, isOn: Boolean) :
-				this(Region(x, y, z), isOn)
+			this(Region(x, y, z), isOn)
 
 		infix fun contains(cube: Triple<Int, Int, Int>): Boolean {
 			return region contains cube
@@ -39,42 +39,23 @@ class Day22(filename: String) {
 		infix fun contains(cube: Triple<Int, Int, Int>): Boolean {
 			return (
 				cube.first in x
-				&& cube.second in y
-				&& cube.third in z
-			)
+					&& cube.second in y
+					&& cube.third in z
+				)
 		}
 
 		infix fun contains(other: Region): Boolean {
 			return (
 				this.x contains other.x
-				&& this.y contains other.y
-				&& this.z contains other.z
-			)
-		}
-
-		infix fun add(other: Region): Set<Region> {
-			val xSet = x combine other.x
-			val ySet = y combine other.y
-			val zSet = z combine other.z
-
-			val result = mutableSetOf(this)
-
-			for (_x in xSet) {
-				for (_y in ySet) {
-					for (_z in zSet) {
-						val region = Region(_x, _y, _z)
-						if (other contains region && !(this contains region))
-							result += region
-					}
-				}
-			}
-			return result
+					&& this.y contains other.y
+					&& this.z contains other.z
+				)
 		}
 
 		infix fun subtract(other: Region): Set<Region> {
-			val xSet = x combine other.x
-			val ySet = y combine other.y
-			val zSet = z combine other.z
+			val xSet = x split other.x
+			val ySet = y split other.y
+			val zSet = z split other.z
 
 			val result = mutableSetOf<Region>()
 
@@ -104,21 +85,49 @@ class Day22(filename: String) {
 		}
 
 		fun cubeCount(): Long {
-			val x = max(x.size().toLong() - 2, 0)
-			val y = max(y.size().toLong() - 2, 0)
-			val z = max(z.size().toLong() - 2, 0)
+			val x = x.size.toLong()
+			val y = y.size.toLong()
+			val z = z.size.toLong()
 			return x * y * z
 		}
 
 		private infix fun IntRange.contains(other: IntRange) =
 			this.first <= other.first && this.last >= other.last
 
-		private infix fun IntRange.combine(other: IntRange): List<IntRange> {
-			val (a, b, c, d) = listOf(this.first, this.last, other.first, other.last).sorted()
-			return listOf(a..b, b..c, c..d)
+		private infix fun IntRange.split(other: IntRange): List<IntRange> {
+			val overlap = (this overlap other) ?: return listOf(this, other) // No overlap
+			return if (overlap == other) { // Full overlap
+				listOf(
+					first until other.first,
+					other,
+					other.last + 1..last
+				)
+			}
+			else if (overlap == this) {
+				listOf(
+					other.first until first,
+					this,
+					last+1..other.last
+				)
+			}
+			else { // Partial overlap
+				if (this.contains(other.first)) { // Right side
+					listOf(
+						first until other.first,
+						other.first..last,
+						last+1..other.last
+					)
+				} else { // Left side
+					listOf(
+						other.first until first,
+						first..other.last,
+						other.last+1..last
+					)
+				}
+			}.filter { it.size > 0 }
 		}
 
-		infix fun IntRange.overlap(other: IntRange): IntRange? {
+		private infix fun IntRange.overlap(other: IntRange): IntRange? {
 			if (
 				(first < other.first && last < other.first)
 				|| (first > other.last && last > other.last)
@@ -127,15 +136,24 @@ class Day22(filename: String) {
 			}
 			return max(first, other.first)..min(last, other.last)
 		}
-
-		private fun IntRange.size() = last - first + 1
 	}
 
-	fun getCubeCount(): Long {
+	fun getRestrictedCubeCount(): Long {
+		return getCubeCount()
+	}
+
+	fun getFullCubeCount(): Long {
+		return getCubeCount(false)
+	}
+
+	private fun getCubeCount(isRestricted: Boolean = true): Long {
 		var regionSet = setOf<Region>()
 
 		for (i in instructions) {
-			val iRegion = i.region.getRestrictedRegion() ?: continue
+			println("Regions: ${regionSet.size} Instruction: $i")
+			val iRegion = if (isRestricted) {
+				i.region.getRestrictedRegion() ?: continue
+			} else i.region
 			if (i.isOn) {
 				if (regionSet.isEmpty()) {
 					regionSet = setOf(iRegion)
@@ -147,8 +165,7 @@ class Day22(filename: String) {
 				}
 				newRegions += iRegion
 				regionSet = newRegions
-			}
-			else {
+			} else {
 				val newRegions = mutableSetOf<Region>()
 				for (region in regionSet) {
 					newRegions += (region subtract iRegion)
@@ -157,30 +174,7 @@ class Day22(filename: String) {
 			}
 		}
 
-		val internalCount = regionSet.sumOf { it.cubeCount() }
-
-		val edgeVertices = mutableSetOf<Triple<Int, Int, Int>>()
-		for (region in regionSet) {
-			for (x in region.x) {
-				edgeVertices += Triple(x, region.y.first, region.z.first)
-				edgeVertices += Triple(x, region.y.first, region.z.last)
-				edgeVertices += Triple(x, region.y.last, region.z.first)
-				edgeVertices += Triple(x, region.y.last, region.z.last)
-			}
-			for (y in region.y) {
-				edgeVertices += Triple(region.x.first, y, region.z.first)
-				edgeVertices += Triple(region.x.first, y, region.z.last)
-				edgeVertices += Triple(region.x.last, y, region.z.first)
-				edgeVertices += Triple(region.x.last, y, region.z.last)
-			}
-			for (z in region.z) {
-				edgeVertices += Triple(region.x.first, region.y.first, z)
-				edgeVertices += Triple(region.x.first, region.y.last, z)
-				edgeVertices += Triple(region.x.last, region.y.first, z)
-				edgeVertices += Triple(region.x.last, region.y.last, z)
-			}
-		}
-		return internalCount + edgeVertices.size
+		return regionSet.sumOf { it.cubeCount() }
 	}
 
 }
