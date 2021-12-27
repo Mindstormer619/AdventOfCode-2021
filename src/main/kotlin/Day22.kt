@@ -102,26 +102,24 @@ class Day22(filename: String) {
 					other,
 					other.last + 1..last
 				)
-			}
-			else if (overlap == this) {
+			} else if (overlap == this) {
 				listOf(
 					other.first until first,
 					this,
-					last+1..other.last
+					last + 1..other.last
 				)
-			}
-			else { // Partial overlap
+			} else { // Partial overlap
 				if (this.contains(other.first)) { // Right side
 					listOf(
 						first until other.first,
 						other.first..last,
-						last+1..other.last
+						last + 1..other.last
 					)
 				} else { // Left side
 					listOf(
 						other.first until first,
 						first..other.last,
-						other.last+1..last
+						other.last + 1..last
 					)
 				}
 			}.filter { it.size > 0 }
